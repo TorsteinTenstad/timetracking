@@ -1,5 +1,6 @@
+from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtBoundSignal, pyqtSignal
-from PyQt5.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
 class StringInput(QWidget):
 
@@ -13,6 +14,11 @@ class StringInput(QWidget):
         self.root_layout.addWidget(self.text_input)
         self.root_layout.addWidget(self.confirm_button)
         self.confirm_button.clicked.connect(self._on_confirm)
+
+        self.text_input.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Maximum))
+        self.confirm_button.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum))
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Maximum))
+        self.root_layout.setContentsMargins(0, 0, 0, 0)
 
     def _on_confirm(self):
         self.string_recieved_signal.emit(self.text_input.text())
