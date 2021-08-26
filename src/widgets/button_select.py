@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 from PyQt5.QtCore import QObject, pyqtSignal
 from widgets.string_input import StringInput
 
@@ -52,17 +52,20 @@ class AppendableButtonSelect(ButtonSelect):
         if label.strip(' ') != '':
             self.buttons[label] = ToggleableButton(label)
             self.buttons[label].is_down_signal.connect(lambda is_down, label=label : self._on_input(label, is_down))
+            print(len(self.buttons))
             self.button_layout.insertWidget(len(self.buttons)-1, self.buttons[label])
 
 
 class TreeSelect(AppendableButtonSelect):
 
-    def __init__(self, tree={}):
+    def __init__(self, tree=None):
         self.tree = {}
-        for label, branch in tree.items():
-            self.tree[label] = TreeSelect(branch)
-            self.tree[label].selection_signal.connect(self._on_next_selection_signal)
+        if tree:
+            for label, branch in tree.items():
+                self.tree[label] = TreeSelect(branch)
+                self.tree[label].selection_signal.connect(self._on_next_selection_signal)
         super().__init__(self.tree.keys())
+        #self.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum))
 
     def _add_option(self, label):
         super()._add_option(label)
