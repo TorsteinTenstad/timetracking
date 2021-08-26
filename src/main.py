@@ -30,7 +30,6 @@ def main():
 
     ui.start_signal.connect(time_logger.start_session)
     ui.stop_signal.connect(time_logger.stop_session)
-    ui.category_signal.connect(time_logger.set_category)
 
     sys.exit(app.exec_())
 

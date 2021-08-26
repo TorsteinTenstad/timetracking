@@ -7,9 +7,8 @@ from widgets.start_stop_buttons import StartStopButtons
 
 class UI(QMainWindow):
 
-    start_signal = pyqtSignal()
+    start_signal = pyqtSignal(str)
     stop_signal = pyqtSignal()
-    category_signal = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -19,13 +18,28 @@ class UI(QMainWindow):
         self.root_layout = QHBoxLayout(self.root_widget)
 
         self.timer_panel = StartStopButtons()
-        self.timer_panel.start_signal.connect(lambda : self.start_signal.emit())
-        self.timer_panel.stop_signal.connect(lambda : self.stop_signal.emit())
+        self.timer_panel.start_signal.connect(self._on_timer_start)
+        self.timer_panel.stop_signal.connect(self._on_timer_stop)
         self.root_layout.addWidget(self.timer_panel, alignment=QtCore.Qt.AlignTop)
         self.category_selector = TreeSelect(categories_tree)
-        self.category_selector.selection_signal.connect(lambda category : self.category_signal.emit(';'.join(category)))
+        self.category_selector.selection_signal.connect(self._on_category_select)
         self.root_layout.addWidget(self.category_selector, alignment=QtCore.Qt.AlignTop)
 
         self.setCentralWidget(self.root_widget)
         self.setWindowTitle('Timetracker')
         self.show()
+    
+    def _on_timer_start(self):
+        self.start_signal.emit(self.category)
+        self.category_selector.setEnabled(False)
+
+    def _on_timer_stop(self):
+        self.stop_signal.emit()
+        self.category_selector.setEnabled(True)
+
+    def _on_category_select(self, category):
+        if category[0] is None:
+            self.timer_panel.setEnabled(False)
+        else:
+            self.timer_panel.setEnabled(True)
+            self.category = ';'.join([x for x in category if x is not None])

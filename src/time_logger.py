@@ -10,12 +10,8 @@ class TimeLogger:
     def get_categories(self):
         return self._df['category'].unique()
 
-    def set_category(self, category):
-        self._category = category
-
-    def start_session(self):
-        self._df = self._df.append({'category': self._category, 'start': datetime.now().replace(microsecond=0)}, ignore_index = True)
-        print(self._df)
+    def start_session(self, category):
+        self._df = self._df.append({'category': category, 'start': datetime.now().replace(microsecond=0)}, ignore_index = True)
         self.save()
 
     def stop_session(self):

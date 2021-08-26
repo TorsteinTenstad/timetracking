@@ -52,37 +52,41 @@ class AppendableButtonSelect(ButtonSelect):
         if label.strip(' ') != '':
             self.buttons[label] = ToggleableButton(label)
             self.buttons[label].is_down_signal.connect(lambda is_down, label=label : self._on_input(label, is_down))
-            print(len(self.buttons))
             self.button_layout.insertWidget(len(self.buttons)-1, self.buttons[label])
 
 
 class TreeSelect(AppendableButtonSelect):
 
     def __init__(self, tree=None):
-        self.tree = {}
+        self._tree = {}
         if tree:
             for label, branch in tree.items():
-                self.tree[label] = TreeSelect(branch)
-                self.tree[label].selection_signal.connect(self._on_next_selection_signal)
-        super().__init__(self.tree.keys())
+                self._tree[label] = TreeSelect(branch)
+                self._tree[label].selection_signal.connect(self._on_next_selection_signal)
+        super().__init__(self._tree.keys())
         #self.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum))
 
     def _add_option(self, label):
         super()._add_option(label)
-        self.tree[label] = TreeSelect()
-        self.tree[label].selection_signal.connect(self._on_next_selection_signal)
+        self._tree[label] = TreeSelect()
+        self._tree[label].selection_signal.connect(self._on_next_selection_signal)
         
     def _change_selection(self, selection):
         self._close_next()
         super()._change_selection(selection)
         if self.selected:
-            self.root_layout.addWidget(self.tree[self.selected])
+            self.root_layout.addWidget(self._tree[self.selected])
         
     def _close_next(self):
         if self.selected:
-            self.tree[self.selected]._close_next()
-            self.tree[self.selected]._deselect()
-            self.tree[self.selected].setParent(None)
+            self._tree[self.selected]._close_next()
+            self._tree[self.selected]._deselect()
+            self._tree[self.selected].setParent(None)
 
     def _on_next_selection_signal(self, label):
         self.selection_signal.emit([self.selected] + label)
+
+    def setEnabled(self, enabled):
+        super().setEnabled(enabled)
+        for branch in self._tree.values():
+            branch.setEnabled(enabled)
