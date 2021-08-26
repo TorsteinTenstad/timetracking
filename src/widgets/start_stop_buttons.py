@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QSizePolicy, QWidget
 
 from widgets import ui_parameters
 
@@ -22,6 +22,7 @@ class StartStopButtons(QWidget):
             button.clicked.connect(self._on_input)
             button.setStyleSheet(ui_parameters.large_text)
             button.setFixedSize(*ui_parameters.large_button_size)
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum))
         self.setEnabled(False)
 
     def _on_input(self):

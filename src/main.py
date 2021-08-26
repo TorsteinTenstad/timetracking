@@ -1,6 +1,6 @@
 import sys
 import time
-from PyQt5 import QtWidgets
+from PyQt5 import QtGui, QtWidgets
 from time_logger import TimeLogger
 from ui import UI
 
@@ -22,6 +22,9 @@ def create_dict_tree(path_strings):
 def main():
     app = QtWidgets.QApplication(sys.argv)
 
+    global_font_id = QtGui.QFontDatabase.addApplicationFont('font.ttf')
+    app.setFont(QtGui.QFont(QtGui.QFontDatabase.applicationFontFamilies(global_font_id)[0]))
+        
     ui = UI()
     time_logger = TimeLogger('time_log.csv')
 

@@ -43,3 +43,7 @@ class UI(QMainWindow):
         else:
             self.timer_panel.setEnabled(True)
             self.category = ';'.join([x for x in category if x is not None])
+        self._resize_to_fit()
+
+    def _resize_to_fit(self):
+        self.resize(self.root_widget.minimumSizeHint())

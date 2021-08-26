@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 from PyQt5.QtCore import QObject, pyqtSignal
 from widgets.string_input import StringInput
+from widgets import ui_parameters
 
 from widgets.toggleable_button import ToggleableButton
 
@@ -22,6 +23,7 @@ class ButtonSelect(QWidget):
             button.is_down_signal.connect(lambda is_down, label=label : self._on_input(label, is_down))
             self.button_layout.addWidget(button)
 
+        self.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         self.root_layout.setContentsMargins(0, 0, 0, 0)
 
     def _on_input(self, label, is_down):
@@ -43,7 +45,8 @@ class AppendableButtonSelect(ButtonSelect):
 
     def __init__(self, labels=None):
         super().__init__(labels)
-        self.string_input = StringInput(button_label='+')
+        self.string_input = StringInput()
+        self.string_input.setFixedWidth(ui_parameters.regular_long_button_size[0])
         self.string_input.string_recieved_signal.connect(self._add_option)
         self.button_layout.addWidget(self.string_input)
 
